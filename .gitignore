@@ -1,2 +1,3 @@
-answer.json
+.gitignore
 node_modules
+answer.json
