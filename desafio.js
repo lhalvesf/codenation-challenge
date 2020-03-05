@@ -1,40 +1,33 @@
-const alf = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
-
-var resposta = {
-    "numero_casas": 5,
-    "token": "7a58e9f44be8d1d98f73f57fd8461b831031f46e",
-    "cifrado": "ymj gjxy jslnsjjwx n pstb fwj fwynxyx fy mjfwy. ymj gjxy ijxnlsjwx n pstb fwj xjhwjyqd yjhmsnhnfsx fx bjqq. fsiwjn mjwfxnrhmzp",
-    "decifrado": "",
-    "resumo_criptografico": ""
-}
-
-var letters = resposta.cifrado.split('')
-
-function encontraLetra(l,c) {
-    var letterPosition = alf.indexOf(l)+c
-    if (letterPosition > 26) {
-        return converteLetra(letterPosition - 26)
-    } else {
-        return converteLetra(letterPosition)
+const alfabeto = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+const fs = require('fs')
+var answer = JSON.parse(fs.readFileSync("answer.json"))
+const updateJsonFile = require('update-json-file')
+const filePath = 'answer.json'
+const sha1 = require('sha1')
+var FormData = require('form-data');
+ 
+var letters = {
+    caracteres: answer.cifrado.split(''),
+    indexes: [],
+    indiceOriginal: function(a,c) {
+        this.caracteres.forEach(i => {
+            if ( a.indexOf(i) != -1 ) {
+                let index = a.indexOf(i) + c
+                if (index < 26 && index >= 0 ) {
+                    this.indexes.push(a[index])
+                } else if ( index >= 26) {
+                    this.indexes.push(a[index-26])
+                }            
+            } else {
+                this.indexes.push(' ')
+            }
+        })
+        return this.indexes.join('')
     }
 }
 
-
-function converteLetra(l) {
-    var texto = []
-    if (l == undefined) {
-        return texto.push(" ")
-    } else {
-        return texto.push(alf[l])
-    }
-    console.log(texto)
-}
-function roda(c) {
-    letters.forEach(element => {
-        encontraLetra(element,c)
-    })
-}
-
-roda(0)
-
-// console.log(encontraLetra(letters,1))
+updateJsonFile(filePath, (data) => {
+    data.decifrado = letters.indiceOriginal(alfabeto, 5)
+    data.resumo_criptografico = sha1(letters.indiceOriginal(alfabeto, 5))
+    return data
+})
