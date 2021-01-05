@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "FormData": "^0.10.1",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "form-data": "^3.0.0",
     "sha1": "^1.1.1",
     "update-json-file": "^1.1.1"
